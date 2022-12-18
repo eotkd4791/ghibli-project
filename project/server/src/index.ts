@@ -7,6 +7,8 @@ import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
+import { buildSchema } from 'type-graphql';
+import { FilmResolver } from './resolvers/Film';
 
 dotenv.config();
 
@@ -15,16 +17,7 @@ const httpServer = http.createServer(app);
 
 async function main() {
   const apolloServer = new ApolloServer({
-    typeDefs: `#graphql
-      type Query {
-        hello: String
-      }
-    `,
-    resolvers: {
-      Query: {
-        hello: () => 'hello world',
-      },
-    },
+    schema: await buildSchema({ resolvers: [FilmResolver] }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 

@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 
 interface Props {
-  film: FilmsQuery['films'][0];
+  film: FilmsQuery['films']['films'][0];
 }
 
 const FilmCard: React.FC<Props> = ({ film }) => {

@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
     >
       <Flex
         maxW={960}
-        color={useColorModeValue('gray.200', 'gray.700')}
+        color={useColorModeValue('gray.600', 'white')}
         minH="60px"
         align="center"
         m="auto"

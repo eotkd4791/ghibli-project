@@ -1,4 +1,5 @@
-import { BackgroundProps, Box, Flex } from '@chakra-ui/react';
+import { BackgroundProps, Box } from '@chakra-ui/react';
+import Navbar from './nav/Navbar';
 
 interface Props {
   bg?: BackgroundProps['bg'];
@@ -10,9 +11,7 @@ const CommonLayout: React.FC<React.PropsWithChildren<Props>> = ({
 }) => {
   return (
     <div>
-      <Flex maxW="960px" justify="center">
-        네비게이션 바 자리 입니다.
-      </Flex>
+      <Navbar />
       <Box
         px={{ base: 4 }}
         pt={24}

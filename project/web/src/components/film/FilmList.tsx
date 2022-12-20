@@ -3,7 +3,7 @@ import { useFilmsQuery } from '../../generated/graphql';
 import FilmCard from './FilmCard';
 import { Waypoint } from 'react-waypoint';
 
-export default function FilmList(): JSX.Element {
+const FilmList: React.FC = () => {
   const LIMIT = 6;
   const { data, loading, error, fetchMore } = useFilmsQuery({
     variables: { limit: LIMIT, cursor: 1 },
@@ -36,4 +36,6 @@ export default function FilmList(): JSX.Element {
         ))}
     </SimpleGrid>
   );
-}
+};
+
+export default FilmList;

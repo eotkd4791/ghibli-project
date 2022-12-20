@@ -55,4 +55,9 @@ export class FilmResolver {
   director(@Root() parentFilm: Film): Director | undefined {
     return ghibliData.directors.find((dr) => dr.id === parentFilm.director_id);
   }
+
+  @Query(() => Film, { nullable: true })
+  film(@Arg('filmId', () => Int) id: number) {
+    return ghibliData.films.find((film) => film.id === id);
+  }
 }

@@ -9,6 +9,7 @@ import { json } from 'body-parser';
 import dotenv from 'dotenv';
 import { buildSchema } from 'type-graphql';
 import { FilmResolver } from './resolvers/Film';
+import { CutResolver } from './resolvers/Cut';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const httpServer = http.createServer(app);
 
 async function main() {
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers: [FilmResolver] }),
+    schema: await buildSchema({ resolvers: [FilmResolver, CutResolver] }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 

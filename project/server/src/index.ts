@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 import { buildSchema } from 'type-graphql';
 import { FilmResolver } from './resolvers/Film';
 import { CutResolver } from './resolvers/Cut';
+import { createDB } from './db/db-client';
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ const app = express();
 const httpServer = http.createServer(app);
 
 async function main() {
+  await createDB();
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({ resolvers: [FilmResolver, CutResolver] }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],

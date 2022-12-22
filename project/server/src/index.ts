@@ -8,9 +8,10 @@ import cors from 'cors';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
 import { buildSchema } from 'type-graphql';
+import { createDB } from './db/db-client';
 import { FilmResolver } from './resolvers/Film';
 import { CutResolver } from './resolvers/Cut';
-import { createDB } from './db/db-client';
+import { UserResolver } from './resolvers/User';
 
 dotenv.config();
 
@@ -21,7 +22,9 @@ async function main() {
   await createDB();
 
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers: [FilmResolver, CutResolver] }),
+    schema: await buildSchema({
+      resolvers: [FilmResolver, CutResolver, UserResolver],
+    }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 

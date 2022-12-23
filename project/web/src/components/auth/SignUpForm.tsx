@@ -29,7 +29,7 @@ const SignUpRealForm: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const onSubmit = async (data: SignUpMutationVariables) => {
+  const onSubmit = (data: SignUpMutationVariables) => {
     const { signUpInput } = data;
     return signUp({ variables: { signUpInput } })
       .then((res) => {
@@ -50,14 +50,14 @@ const SignUpRealForm: React.FC = () => {
   };
 
   return (
-    <Stack as="form" spacing={4} onSubmit={handleSubmit(onSubmit)}>
+    <Stack as="form" spacing={4} onSubmit={handleSubmit(onSubmit)} noValidate>
       <FormControl isInvalid={!!errors.signUpInput?.email}>
         <FormLabel>이메일</FormLabel>
         <Input
           type="email"
           placeholder="example@email.com"
           {...register('signUpInput.email', {
-            required: '이메이을 입력해주세요.',
+            required: '이메일을 입력해주세요.',
             pattern: {
               value:
                 /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,

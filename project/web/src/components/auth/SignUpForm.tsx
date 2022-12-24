@@ -29,24 +29,22 @@ const SignUpRealForm: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const onSubmit = (data: SignUpMutationVariables) => {
-    const { signUpInput } = data;
-    return signUp({ variables: { signUpInput } })
-      .then((res) => {
-        if (res.data?.signUp) {
-          toast({ title: '회원가입을 환영합니다!', status: 'success' });
-          navigate('/');
-        } else {
-          toast({
-            title: '회원가입 도중 문제가 발생했습니다.',
-            status: 'error',
-          });
-        }
-      })
-      .catch((err) => {
-        toast({ title: '이메일 또는 아이디가 중복됩니다.', status: 'error' });
-        return err;
-      });
+  const onSubmit = async ({ signUpInput }: SignUpMutationVariables) => {
+    try {
+      const response = await signUp({ variables: { signUpInput } });
+      if (response.data?.signUp) {
+        toast({ title: '회원가입을 환영합니다!', status: 'success' });
+        navigate('/');
+      } else {
+        toast({
+          title: '회원가입 도중 문제가 발생했습니다.',
+          status: 'error',
+        });
+      }
+    } catch (err) {
+      toast({ title: '이메일 또는 아이디가 중복됩니다.', status: 'error' });
+      return err;
+    }
   };
 
   return (
@@ -96,7 +94,7 @@ const SignUpRealForm: React.FC = () => {
               value:
                 /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/,
               message:
-                '암호는 문자,숫자,특수 문자를 퐇마한 8자 이상이어야 합니다.',
+                '암호는 문자,숫자,특수 문자를 포함한 8자 이상이어야 합니다.',
             },
           })}
         />
@@ -115,7 +113,7 @@ const SignUpRealForm: React.FC = () => {
 
 const SignUpForm: React.FC = () => {
   return (
-    <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
+    <Stack spacing={8} mx="auto" maxW="lg" py={12}>
       <Stack align="center">
         <Heading fontSize="4xl">계정 생성</Heading>
         <Text fontSize="lg" color="gray.600">

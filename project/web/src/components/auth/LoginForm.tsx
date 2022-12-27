@@ -12,17 +12,37 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { LoginMutationVariables } from '../../generated/graphql';
+import {
+  LoginMutationVariables,
+  useLoginMutation,
+} from '../../generated/graphql';
+import { useNavigate } from 'react-router-dom';
 
 const LoginRealForm: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginMutationVariables>();
 
-  const onSubmit = (formData: LoginMutationVariables) => {
-    console.log(formData);
+  const navigate = useNavigate();
+  const [login, { loading }] = useLoginMutation();
+
+  const onSubmit = async (formData: LoginMutationVariables) => {
+    const { data } = await login({ variables: formData });
+    if (data?.login.errors) {
+      data.login.errors.forEach((err) => {
+        const field = 'loginInput.';
+        setError(`${field}${err.field}` as Parameters<typeof setError>[0], {
+          message: err.message,
+        });
+      });
+    }
+    if (data && data.login.accessToken) {
+      localStorage.setItem('access_token', data.login.accessToken);
+      navigate('/');
+    }
   };
 
   return (
@@ -63,7 +83,7 @@ const LoginRealForm: React.FC = () => {
 
         <Divider />
 
-        <Button colorScheme="teal" type="submit">
+        <Button colorScheme="teal" type="submit" isLoading={loading}>
           로그인
         </Button>
       </Stack>

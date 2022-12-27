@@ -83,7 +83,7 @@ export class UserResolver {
     if (!isValid) {
       return {
         errors: [
-          { field: 'password', message: '비밀번호를 올바르게 입려해주세요.' },
+          { field: 'password', message: '비밀번호를 올바르게 입력해주세요.' },
         ],
       };
     }

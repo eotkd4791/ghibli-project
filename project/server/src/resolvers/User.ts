@@ -1,15 +1,20 @@
 import { IsEmail, IsString } from 'class-validator';
 import {
   Arg,
+  Ctx,
   Field,
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
+  UseMiddleware,
 } from 'type-graphql';
 import argon2 from 'argon2';
+import { isAuthenticated } from '../middlewares/isAuthenticated';
 import { createAccessToken } from '../utils/jwt-auth';
 import User from '../entities/User';
+import { MyContext } from '../apollo/createApolloServer';
 
 @InputType()
 export class SignUpInput {
@@ -48,6 +53,20 @@ class LoginResponse {
 
 @Resolver(User)
 export class UserResolver {
+  @UseMiddleware(isAuthenticated)
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() ctx: MyContext) {
+    if (!ctx.verifiedUser) {
+      return null;
+    }
+
+    return User.findOne({
+      where: {
+        id: ctx.verifiedUser.userId,
+      },
+    });
+  }
+
   @Mutation(() => User)
   async signUp(@Arg('signUpInput') signUpInput: SignUpInput) {
     const { email, username, password } = signUpInput;

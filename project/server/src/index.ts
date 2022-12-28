@@ -1,17 +1,14 @@
 import 'reflect-metadata';
 import express from 'express';
-import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
-import { buildSchema } from 'type-graphql';
 import { createDB } from './db/db-client';
-import { FilmResolver } from './resolvers/Film';
-import { CutResolver } from './resolvers/Cut';
-import { UserResolver } from './resolvers/User';
+import createApolloServer, {
+  verifyAccessTokenFromReqHeaders,
+} from './apollo/createApolloServer';
 
 dotenv.config();
 
@@ -21,13 +18,7 @@ const httpServer = http.createServer(app);
 async function main() {
   await createDB();
 
-  const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [FilmResolver, CutResolver, UserResolver],
-    }),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
-
+  const apolloServer = await createApolloServer(httpServer);
   await apolloServer.start();
 
   app.use(
@@ -35,7 +26,14 @@ async function main() {
     cors<cors.CorsRequest>(),
     json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req }) => ({ token: req.headers.token }),
+      context: async ({ req, res }) => {
+        const verifiedUser = verifyAccessTokenFromReqHeaders(req.headers);
+        return {
+          req,
+          res,
+          verifiedUser,
+        };
+      },
     }),
   );
 

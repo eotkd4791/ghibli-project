@@ -11,8 +11,13 @@ import {
   UseMiddleware,
 } from 'type-graphql';
 import argon2 from 'argon2';
+import { TreeLevelColumn } from 'typeorm';
+import {
+  setRefreshTokenHeader,
+  createRefreshToken,
+  createAccessToken,
+} from '../utils/jwt-auth';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
-import { createAccessToken } from '../utils/jwt-auth';
 import User from '../entities/User';
 import { MyContext } from '../apollo/createApolloServer';
 
@@ -83,7 +88,10 @@ export class UserResolver {
   }
 
   @Mutation(() => LoginResponse)
-  public async login(@Arg('loginInput') loginInput: LoginInput) {
+  public async login(
+    @Arg('loginInput') loginInput: LoginInput,
+    @Ctx() { res }: MyContext,
+  ) {
     const { emailOrUsername, password } = loginInput;
 
     const user = await User.findOne({
@@ -108,6 +116,10 @@ export class UserResolver {
     }
 
     const accessToken = createAccessToken(user);
+    const refreshToken = createRefreshToken(user);
+
+    setRefreshTokenHeader(res, refreshToken);
+
     return { user, accessToken };
   }
 }

@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { MiddlewareFn } from 'type-graphql';
-import { verifyAccessToken, MyContext } from '../apollo/createApolloServer';
+import { MyContext } from '../apollo/createApolloServer';
+import { verifyAccessToken } from '../utils/jwt-auth';
 
 export const isAuthenticated: MiddlewareFn<MyContext> = async (
   { context },

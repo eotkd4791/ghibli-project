@@ -5,10 +5,11 @@ import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import redis from './redis/redis-client';
 import { createDB } from './db/db-client';
-import createApolloServer, {
-  verifyAccessTokenFromReqHeaders,
-} from './apollo/createApolloServer';
+import createApolloServer from './apollo/createApolloServer';
+import { verifyAccessTokenFromReqHeaders } from './utils/jwt-auth';
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ const httpServer = http.createServer(app);
 
 async function main() {
   await createDB();
+
+  app.use(cookieParser());
 
   const apolloServer = await createApolloServer(httpServer);
   await apolloServer.start();
@@ -35,6 +38,7 @@ async function main() {
           req,
           res,
           verifiedUser,
+          redis,
         };
       },
     }),

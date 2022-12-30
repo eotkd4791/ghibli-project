@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
+import { GraphQLError } from 'graphql';
+import { IncomingHttpHeaders } from 'http';
 import User from '../entities/User';
 
 export const DEFAULT_JWT_SECRET_KEY = 'secret-key';
@@ -23,9 +25,43 @@ export const createAccessToken = (user: User) => {
   const accessToken = jwt.sign(
     userData,
     process.env.JWT_SECRET_KEY || DEFAULT_JWT_SECRET_KEY,
-    { expiresIn: '30m' },
+    { expiresIn: process.env.NODE_ENV === 'development' ? '10s' : '30m' },
   );
   return accessToken;
+};
+
+export const verifyAccessToken = (
+  accessToken?: string,
+): JwtVerifiedUesr | null => {
+  console.log({ accessToken });
+  if (!accessToken) return null;
+
+  try {
+    const verified = jwt.verify(
+      accessToken,
+      process.env.JWT_SECRET_KEY || DEFAULT_JWT_SECRET_KEY,
+    ) as JwtVerifiedUesr;
+    return verified;
+  } catch (err) {
+    console.error('access_token expired: ', err.expiredAt);
+    throw new GraphQLError('access token expired');
+  }
+};
+
+export const verifyAccessTokenFromReqHeaders = (
+  headers: IncomingHttpHeaders,
+): JwtVerifiedUesr | null => {
+  const { authorization } = headers;
+  if (!authorization) {
+    return null;
+  }
+
+  const accessToken = authorization.split(' ')[1];
+  try {
+    return verifyAccessToken(accessToken);
+  } catch (err) {
+    return null;
+  }
 };
 
 export const setRefreshTokenHeader = (res: Response, refreshToken: string) => {

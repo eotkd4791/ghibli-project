@@ -1,12 +1,10 @@
-import http, { IncomingHttpHeaders } from 'http';
+import http from 'http';
 import { buildSchema } from 'type-graphql';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import jwt from 'jsonwebtoken';
-import { GraphQLError } from 'graphql';
 import { Request, Response } from 'express';
 import redis from '../redis/redis-client';
-import { JwtVerifiedUesr, DEFAULT_JWT_SECRET_KEY } from '../utils/jwt-auth';
+import { JwtVerifiedUesr } from '../utils/jwt-auth';
 import { FilmResolver } from '../resolvers/Film';
 import { CutResolver } from '../resolvers/Cut';
 import { UserResolver } from '../resolvers/User';

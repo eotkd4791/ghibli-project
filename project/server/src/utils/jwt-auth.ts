@@ -25,7 +25,7 @@ export const createAccessToken = (user: User) => {
   const accessToken = jwt.sign(
     userData,
     process.env.JWT_SECRET_KEY || DEFAULT_JWT_SECRET_KEY,
-    { expiresIn: process.env.NODE_ENV === 'development' ? '10s' : '30m' },
+    { expiresIn: '30m' },
   );
   return accessToken;
 };
@@ -33,7 +33,6 @@ export const createAccessToken = (user: User) => {
 export const verifyAccessToken = (
   accessToken?: string,
 ): JwtVerifiedUesr | null => {
-  console.log({ accessToken });
   if (!accessToken) return null;
 
   try {

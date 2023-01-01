@@ -65,6 +65,16 @@ class LoginResponse {
 @Resolver(User)
 export class UserResolver {
   @UseMiddleware(isAuthenticated)
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { verifiedUser, res, redis }: MyContext) {
+    if (verifiedUser) {
+      setRefreshTokenHeader(res, '');
+      await redis.del(String(verifiedUser.userId));
+    }
+    return true;
+  }
+
+  @UseMiddleware(isAuthenticated)
   @Query(() => User, { nullable: true })
   async me(@Ctx() ctx: MyContext) {
     if (!ctx.verifiedUser) {

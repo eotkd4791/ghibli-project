@@ -4,7 +4,7 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { Request, Response } from 'express';
 import redis from '../redis/redis-client';
-import { JwtVerifiedUesr } from '../utils/jwt-auth';
+import { JwtVerifiedUser } from '../utils/jwt-auth';
 import { FilmResolver } from '../resolvers/Film';
 import { CutResolver } from '../resolvers/Cut';
 import { UserResolver } from '../resolvers/User';
@@ -12,7 +12,7 @@ import { UserResolver } from '../resolvers/User';
 export interface MyContext {
   req: Request;
   res: Response;
-  verifiedUser: JwtVerifiedUesr | null;
+  verifiedUser: JwtVerifiedUser | null;
   redis: typeof redis;
 }
 

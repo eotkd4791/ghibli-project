@@ -7,12 +7,12 @@ import User from '../entities/User';
 export const DEFAULT_JWT_SECRET_KEY = 'secret-key';
 export const REFRESH_JWT_SECRET_KEY = 'secret-key2';
 
-export interface JwtVerifiedUesr {
+export interface JwtVerifiedUser {
   userId: User['id'];
 }
 
 export const createRefreshToken = (user: User) => {
-  const userData: JwtVerifiedUesr = { userId: user.id };
+  const userData: JwtVerifiedUser = { userId: user.id };
   return jwt.sign(
     userData,
     process.env.JWT_REFRESH_SECRET_KEY || REFRESH_JWT_SECRET_KEY,
@@ -21,7 +21,7 @@ export const createRefreshToken = (user: User) => {
 };
 
 export const createAccessToken = (user: User) => {
-  const userData: JwtVerifiedUesr = { userId: user.id };
+  const userData: JwtVerifiedUser = { userId: user.id };
   const accessToken = jwt.sign(
     userData,
     process.env.JWT_SECRET_KEY || DEFAULT_JWT_SECRET_KEY,
@@ -32,14 +32,14 @@ export const createAccessToken = (user: User) => {
 
 export const verifyAccessToken = (
   accessToken?: string,
-): JwtVerifiedUesr | null => {
+): JwtVerifiedUser | null => {
   if (!accessToken) return null;
 
   try {
     const verified = jwt.verify(
       accessToken,
       process.env.JWT_SECRET_KEY || DEFAULT_JWT_SECRET_KEY,
-    ) as JwtVerifiedUesr;
+    ) as JwtVerifiedUser;
     return verified;
   } catch (err) {
     console.error('access_token expired: ', err.expiredAt);
@@ -49,7 +49,7 @@ export const verifyAccessToken = (
 
 export const verifyAccessTokenFromReqHeaders = (
   headers: IncomingHttpHeaders,
-): JwtVerifiedUesr | null => {
+): JwtVerifiedUser | null => {
   const { authorization } = headers;
   if (!authorization) {
     return null;

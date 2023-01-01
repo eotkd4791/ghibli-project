@@ -57,5 +57,6 @@ const authLink = setContext((request, prevContext) => {
 export const createApolloClient = (): ApolloClient<NormalizedCacheObject> =>
   new ApolloClient({
     cache: createApolloCache(),
+    uri: 'http://localhost:4000/graphql',
     link: from([authLink, errorLink, httpLink]),
   });

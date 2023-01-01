@@ -97,7 +97,7 @@ export class UserResolver {
   public async login(
     @Arg('loginInput') loginInput: LoginInput,
     @Ctx() { res, redis }: MyContext,
-  ) {
+  ): Promise<LoginResponse> {
     const { emailOrUsername, password } = loginInput;
 
     const user = await User.findOne({
@@ -131,17 +131,20 @@ export class UserResolver {
   }
 
   @Mutation(() => RefreshAccessTokenResponse, { nullable: true })
-  async refreshAccessToken(@Ctx() { req, redis, res }: MyContext) {
+  async refreshAccessToken(
+    @Ctx() { req, res, redis }: MyContext,
+  ): Promise<RefreshAccessTokenResponse | null> {
     const refreshToken = req.cookies.refreshtoken;
-
     if (!refreshToken) return null;
 
     let tokenData: any = null;
 
     try {
-      tokenData = jwt.verify(refreshToken, REFRESH_JWT_SECRET_KEY);
+      tokenData = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET_KEY || REFRESH_JWT_SECRET_KEY,
+      );
     } catch (err) {
-      console.error(err);
       return null;
     }
 
@@ -165,6 +168,6 @@ export class UserResolver {
       sameSite: 'lax',
     });
 
-    return { acessToken: newAccessToken };
+    return { accessToken: newAccessToken };
   }
 }

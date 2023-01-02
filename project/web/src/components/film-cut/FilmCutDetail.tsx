@@ -8,6 +8,7 @@ import {
   Image,
   Text,
   useColorModeValue,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import { FaHeart } from 'react-icons/fa';
@@ -19,6 +20,7 @@ import {
   useVoteMutation,
 } from '../../generated/graphql';
 import { useMemo } from 'react';
+import FilmCutReviewRegiModal from './FilmCutReviewRegiModal';
 
 interface Props {
   cutImg: string;
@@ -70,6 +72,7 @@ const FilmCutDetail: React.FC<Props> = ({
     if (accessToken) return userData?.me?.id;
     return false;
   }, [accessToken, userData?.me?.id]);
+  const reviewRegiDialog = useDisclosure();
 
   return (
     <Box>
@@ -99,10 +102,18 @@ const FilmCutDetail: React.FC<Props> = ({
             >
               <Text>{votesCount}</Text>
             </Button>
-            <Button colorScheme="teal">감상 남기기</Button>
+            <Button colorScheme="teal" onClick={reviewRegiDialog.onOpen}>
+              감상 남기기
+            </Button>
           </HStack>
         </Flex>
       </Box>
+
+      <FilmCutReviewRegiModal
+        cutId={cutId}
+        isOpen={reviewRegiDialog.isOpen}
+        onClose={reviewRegiDialog.onClose}
+      />
     </Box>
   );
 };

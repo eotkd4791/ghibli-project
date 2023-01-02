@@ -9,6 +9,7 @@ import { FilmResolver } from '../resolvers/Film';
 import { CutResolver } from '../resolvers/Cut';
 import { UserResolver } from '../resolvers/User';
 import { createCutVoteLoader } from '../dataloaders/CutVoteLoader';
+import { CutReviewResolver } from '../resolvers/CutReview';
 
 export interface MyContext {
   req: Request;
@@ -26,7 +27,7 @@ const createApolloServer = async (
 ) => {
   return new ApolloServer<MyContext>({
     schema: await buildSchema({
-      resolvers: [FilmResolver, CutResolver, UserResolver],
+      resolvers: [FilmResolver, CutResolver, UserResolver, CutReviewResolver],
     }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });

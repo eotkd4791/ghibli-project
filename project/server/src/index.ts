@@ -10,6 +10,7 @@ import redis from './redis/redis-client';
 import { createDB } from './db/db-client';
 import createApolloServer from './apollo/createApolloServer';
 import { verifyAccessTokenFromReqHeaders } from './utils/jwt-auth';
+import { createCutVoteLoader } from './dataloaders/CutVoteLoader';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ async function main() {
           res,
           verifiedUser,
           redis,
+          cutVoteLoader: createCutVoteLoader(),
         };
       },
     }),

@@ -8,12 +8,14 @@ import { JwtVerifiedUser } from '../utils/jwt-auth';
 import { FilmResolver } from '../resolvers/Film';
 import { CutResolver } from '../resolvers/Cut';
 import { UserResolver } from '../resolvers/User';
+import { createCutVoteLoader } from '../dataloaders/CutVoteLoader';
 
 export interface MyContext {
   req: Request;
   res: Response;
   verifiedUser: JwtVerifiedUser | null;
   redis: typeof redis;
+  cutVoteLoader: ReturnType<typeof createCutVoteLoader>;
 }
 
 const createApolloServer = async (

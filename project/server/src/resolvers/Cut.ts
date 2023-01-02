@@ -59,8 +59,8 @@ export class CutResolver {
   }
 
   @FieldResolver(() => Int)
-  async votesCount(@Root() cut: Cut) {
-    const count = await CutVote.count({ where: { cutId: cut.id } });
-    return count;
+  async votesCount(@Root() cut: Cut, @Ctx() { cutVoteLoader }: MyContext) {
+    const cutVotes = await cutVoteLoader.load({ cutId: cut.id });
+    return cutVotes.length;
   }
 }

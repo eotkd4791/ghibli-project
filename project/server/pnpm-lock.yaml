@@ -13,6 +13,7 @@ specifiers:
   class-validator: ^0.14.0
   cookie-parser: ^1.4.6
   cors: ^2.8.5
+  dataloader: ^2.1.0
   dotenv: ^16.0.3
   express: ^4.18.2
   graphql: ^15.3.0
@@ -34,6 +35,7 @@ dependencies:
   class-validator: 0.14.0
   cookie-parser: 1.4.6
   cors: 2.8.5
+  dataloader: 2.1.0
   dotenv: 16.0.3
   express: 4.18.2
   graphql: 15.8.0
@@ -798,6 +800,10 @@ packages:
 
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+    dev: false
+
+  /dataloader/2.1.0:
+    resolution: {integrity: sha512-qTcEYLen3r7ojZNgVUaRggOI+KM7jrKxXeSHhogh/TWxYMeONEMqY+hmkobiYQozsGIyg9OYVzO4ZIfoB4I0pQ==}
     dev: false
 
   /date-fns/2.29.3:

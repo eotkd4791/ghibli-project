@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm';
+import { CutReview } from '../entities/CutReview';
 import User from '../entities/User';
 import { CutVote } from '../entities/CutVote';
 
@@ -13,7 +14,7 @@ export const createDB = async () => {
       password: process.env.DB_PASSWORD,
       logging: process.env.NODE_ENV !== 'production',
       synchronize: true,
-      entities: [User, CutVote],
+      entities: [User, CutVote, CutReview],
     });
     await AppDataSource.initialize();
     return AppDataSource;

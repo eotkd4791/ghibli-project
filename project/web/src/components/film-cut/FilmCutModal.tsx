@@ -43,7 +43,12 @@ const FilmCutModal: React.FC<Props> = ({ open, onClose, cutId }) => {
           )}
           {!loading && !data && <Center>데이터를 불러오지 못했습니다.</Center>}
           {data && data.cut && (
-            <FilmCutDetail cutId={data.cut.id} cutImg={data.cut.src} />
+            <FilmCutDetail
+              cutId={data.cut.id}
+              cutImg={data.cut.src}
+              votesCount={data.cut.votesCount}
+              isVoted={data.cut.isVoted}
+            />
           )}
         </ModalBody>
       </ModalContent>

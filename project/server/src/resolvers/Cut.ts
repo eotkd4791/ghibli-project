@@ -63,4 +63,16 @@ export class CutResolver {
     const cutVotes = await cutVoteLoader.load({ cutId: cut.id });
     return cutVotes.length;
   }
+
+  @FieldResolver(() => Boolean)
+  async isVoted(
+    @Root() cut: Cut,
+    @Ctx() { cutVoteLoader, verifiedUser }: MyContext,
+  ) {
+    if (verifiedUser) {
+      const votes = await cutVoteLoader.load({ cutId: cut.id });
+      return votes.some((vote) => vote.userId === verifiedUser.userId);
+    }
+    return false;
+  }
 }

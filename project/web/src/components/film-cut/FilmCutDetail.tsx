@@ -8,14 +8,17 @@ import {
   Image,
   Text,
   useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { FaHeart } from 'react-icons/fa';
 import {
   CutDocument,
   CutQuery,
   CutQueryVariables,
+  useMeQuery,
   useVoteMutation,
 } from '../../generated/graphql';
+import { useMemo } from 'react';
 
 interface Props {
   cutImg: string;
@@ -30,6 +33,7 @@ const FilmCutDetail: React.FC<Props> = ({
   isVoted,
   votesCount,
 }) => {
+  const toast = useToast();
   const voteButtonColor = useColorModeValue('gray.500', 'gray.400');
   const [vote, { loading: voteLoading }] = useVoteMutation({
     variables: { cutId },
@@ -60,6 +64,13 @@ const FilmCutDetail: React.FC<Props> = ({
     },
   });
 
+  const accessToken = localStorage.getItem('access_token');
+  const { data: userData } = useMeQuery({ skip: !accessToken });
+  const isLoggedIn = useMemo(() => {
+    if (accessToken) return userData?.me?.id;
+    return false;
+  }, [accessToken, userData?.me?.id]);
+
   return (
     <Box>
       <AspectRatio ratio={16 / 9}>
@@ -75,7 +86,16 @@ const FilmCutDetail: React.FC<Props> = ({
               aria-label="like-this-cut-button"
               leftIcon={<FaHeart />}
               isLoading={voteLoading}
-              onClick={() => vote()}
+              onClick={() => {
+                if (isLoggedIn) {
+                  vote();
+                } else {
+                  toast({
+                    status: 'warning',
+                    description: '좋아요 표시는 로그인한 이후 가능합니다.',
+                  });
+                }
+              }}
             >
               <Text>{votesCount}</Text>
             </Button>

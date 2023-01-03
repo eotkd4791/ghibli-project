@@ -16,6 +16,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   useCreateOrUpdateCutReviewMutation as useCreateCutReview,
   CreateOrUpdateCutReviewMutationVariables as CutReviewVars,
+  CutQuery,
+  CutDocument,
 } from '../../generated/graphql';
 
 export interface Props {
@@ -42,11 +44,41 @@ const FilmCutReviewRegiModal: React.FC<Props> = ({
   });
 
   const onSubmit: SubmitHandler<CutReviewVars> = (formData) => {
-    mutation({ variables: formData })
-      .then((res) => {
-        console.log(res.data);
-        onClose();
-      })
+    mutation({
+      variables: formData,
+      update: (cache, { data }) => {
+        if (data && data.createOrUpdateCutReview) {
+          const currentCut = cache.readQuery<CutQuery>({
+            query: CutDocument,
+            variables: { cutId },
+          });
+          if (currentCut) {
+            const isEdited = currentCut.cutReviews
+              .map((review) => review.id)
+              .includes(data.createOrUpdateCutReview.id);
+            if (isEdited) {
+              cache.evict({
+                id: `CutReview:${data.createOrUpdateCutReview.id}`,
+              });
+            }
+            cache.writeQuery<CutQuery>({
+              query: CutDocument,
+              data: {
+                ...currentCut,
+                cutReviews: isEdited
+                  ? [...currentCut.cutReviews]
+                  : [
+                      data.createOrUpdateCutReview,
+                      ...currentCut.cutReviews.slice(0, 1),
+                    ],
+              },
+              variables: { cutId },
+            });
+          }
+        }
+      },
+    })
+      .then(onClose)
       .catch(() => {
         toast({ title: '감상평 등록 실패', status: 'error' });
       });

@@ -39,5 +39,5 @@ export class CutReview extends BaseEntity {
 
   @Field(() => String, { description: '수정 일자' })
   @UpdateDateColumn({ comment: '수정 일자' })
-  updateAt: Date;
+  updatedAt: Date;
 }

@@ -47,7 +47,7 @@ export type CutReview = {
   id: Scalars['Int'];
   isMine: Scalars['Boolean'];
   /** 수정 일자 */
-  updateAt: Scalars['String'];
+  updatedAt: Scalars['String'];
   user: User;
 };
 

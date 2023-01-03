@@ -44,12 +44,6 @@ class CreateOrUpdateCutReviewInput {
 
 @Resolver(CutReview)
 export class CutReviewResolver {
-  @FieldResolver(() => Boolean)
-  isMine(@Root() cutReview: CutReview, @Ctx() { verifiedUser }: MyContext) {
-    if (!verifiedUser) return false;
-    return cutReview.userId === verifiedUser.userId;
-  }
-
   @Query(() => [CutReview])
   async cutReviews(
     @Args() { take, skip, cutId }: PaginationArgs,
@@ -130,6 +124,12 @@ export class CutReviewResolver {
       },
     });
     return user;
+  }
+
+  @FieldResolver(() => Boolean)
+  isMine(@Root() cutReview: CutReview, @Ctx() { verifiedUser }: MyContext) {
+    if (!verifiedUser) return false;
+    return cutReview.userId === verifiedUser.userId;
   }
 
   @Mutation(() => Boolean)

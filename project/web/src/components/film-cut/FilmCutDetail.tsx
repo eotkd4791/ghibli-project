@@ -113,27 +113,27 @@ const FilmCutDetail: React.FC<Props> = ({
             </Button>
           </HStack>
         </Flex>
-      </Box>
 
-      <Box mt={6}>
-        {!reviews || reviews.length === 0 ? (
-          <Center minH={100}>
-            <Text>제일 먼저 감상을 남겨보세요!</Text>
-          </Center>
-        ) : (
-          <SimpleGrid mt={3} spacing={4} columns={{ base: 1, sm: 2 }}>
-            {reviews.slice(0, 2).map((review) => (
-              <FilmCutReview
-                key={review.id}
-                author={review.user.username}
-                contents={review.contents}
-                isMine={review.isMine}
-                onEditClick={reviewRegiDialog.onOpen}
-                onDeleteClick={deleteAlert.onOpen}
-              />
-            ))}
-          </SimpleGrid>
-        )}
+        <Box mt={6}>
+          {!reviews || reviews.length === 0 ? (
+            <Center minH={100}>
+              <Text>제일 먼저 감상을 남겨보세요!</Text>
+            </Center>
+          ) : (
+            <SimpleGrid mt={3} spacing={4} columns={{ base: 1, sm: 2 }}>
+              {reviews.slice(0, 2).map((review) => (
+                <FilmCutReview
+                  key={review.id}
+                  author={review.user.username}
+                  contents={review.contents}
+                  isMine={review.isMine}
+                  onEditClick={reviewRegiDialog.onOpen}
+                  onDeleteClick={deleteAlert.onOpen}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </Box>
       </Box>
 
       <FilmCutReviewRegiModal

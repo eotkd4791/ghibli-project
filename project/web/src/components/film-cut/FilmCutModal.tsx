@@ -58,4 +58,5 @@ const FilmCutModal: React.FC<Props> = ({ open, onClose, cutId }) => {
     </Modal>
   );
 };
+
 export default FilmCutModal;

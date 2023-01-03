@@ -249,7 +249,7 @@ export type CutQueryVariables = Exact<{
 }>;
 
 
-export type CutQuery = { __typename?: 'Query', cut?: { __typename?: 'Cut', id: number, src: string, votesCount: number, isVoted: boolean, film?: { __typename?: 'Film', id: number, title: string } | null } | null };
+export type CutQuery = { __typename?: 'Query', cut?: { __typename?: 'Cut', id: number, src: string, votesCount: number, isVoted: boolean, film?: { __typename?: 'Film', id: number, title: string } | null } | null, cutReviews: Array<{ __typename?: 'CutReview', id: number, contents: string, isMine: boolean, user: { __typename?: 'User', username: string, email: string } }> };
 
 export type CutsQueryVariables = Exact<{
   filmId: Scalars['Int'];
@@ -503,6 +503,15 @@ export const CutDocument = gql`
     }
     votesCount
     isVoted
+  }
+  cutReviews(cutId: $cutId) {
+    id
+    contents
+    isMine
+    user {
+      username
+      email
+    }
   }
 }
     `;

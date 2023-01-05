@@ -143,7 +143,7 @@ const FilmCutDetail: React.FC<Props> = ({
         onClose={reviewRegiDialog.onClose}
       />
       <FilmCutReviewDelete
-        target={reviews?.find((review) => review.isMine)}
+        target={reviews.find((review) => review.isMine)}
         isOpen={deleteAlert.isOpen}
         onClose={deleteAlert.onClose}
       />

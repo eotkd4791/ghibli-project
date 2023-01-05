@@ -10,6 +10,7 @@ import {
   Mutation,
   Query,
   Resolver,
+  ResolverInterface,
   Root,
   UseMiddleware,
 } from 'type-graphql';
@@ -43,7 +44,7 @@ class CreateOrUpdateCutReviewInput {
 }
 
 @Resolver(CutReview)
-export class CutReviewResolver {
+export class CutReviewResolver implements ResolverInterface<CutReview> {
   @Query(() => [CutReview])
   async cutReviews(
     @Args() { take, skip, cutId }: PaginationArgs,
@@ -55,9 +56,7 @@ export class CutReviewResolver {
     if (verifiedUser && verifiedUser.userId) {
       reviewHistory = await CutReview.findOne({
         where: {
-          user: {
-            id: verifiedUser.userId,
-          },
+          user: { id: verifiedUser.userId },
           cutId,
         },
       });
@@ -77,9 +76,7 @@ export class CutReviewResolver {
       order: { createdAt: 'DESC' },
     });
 
-    if (reviewHistory) {
-      return [reviewHistory, ...reviews];
-    }
+    if (reviewHistory) return [reviewHistory, ...reviews];
     return reviews;
   }
 
@@ -117,13 +114,8 @@ export class CutReviewResolver {
   }
 
   @FieldResolver(() => User)
-  async user(@Root() cutReview: CutReview) {
-    const user = await User.findOne({
-      where: {
-        id: cutReview.userId,
-      },
-    });
-    return user;
+  user(@Root() cutReview: CutReview) {
+    return User.findOne({ where: { id: cutReview.userId } }) as Promise<User>;
   }
 
   @FieldResolver(() => Boolean)

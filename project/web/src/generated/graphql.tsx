@@ -162,7 +162,7 @@ export type QueryCutArgs = {
 export type QueryCutReviewsArgs = {
   cutId: Scalars['Int'];
   skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
+  take?: Scalars['Int'];
 };
 
 

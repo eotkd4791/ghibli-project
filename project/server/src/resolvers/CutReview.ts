@@ -24,12 +24,16 @@ import User from '../entities/User';
 @ArgsType()
 class PaginationArgs {
   @Field(() => Int, { defaultValue: 2 })
+  @IsInt()
   take: number;
 
   @Field(() => Int, { nullable: true })
+  @IsInt()
   skip?: number;
 
-  @Field(() => Int) cutId: number;
+  @Field(() => Int)
+  @IsInt()
+  cutId: number;
 }
 
 @InputType()
@@ -47,7 +51,7 @@ class CreateOrUpdateCutReviewInput {
 export class CutReviewResolver implements ResolverInterface<CutReview> {
   @Query(() => [CutReview])
   async cutReviews(
-    @Args() { take, skip, cutId }: PaginationArgs,
+    @Args({ validate: false }) { take, skip, cutId }: PaginationArgs,
     @Ctx() { verifiedUser }: MyContext,
   ) {
     let realTake = 2;

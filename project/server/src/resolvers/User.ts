@@ -21,6 +21,9 @@ import {
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 import User from '../entities/User';
 import { MyContext } from '../apollo/createApolloServer';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload';
+import { FileUpload } from 'graphql-upload/Upload';
+import { createWriteStream } from 'fs';
 
 @ObjectType({ description: '액세스 토큰 새로고침 반환 데이터' })
 class RefreshAccessTokenResponse {
@@ -64,6 +67,32 @@ class LoginResponse {
 
 @Resolver(User)
 export class UserResolver {
+  @UseMiddleware(isAuthenticated)
+  @Mutation(() => Boolean)
+  async uploadProfileImage(
+    @Ctx() { verifiedUser }: MyContext,
+    @Arg('file', () => GraphQLUpload)
+    { createReadStream, filename }: FileUpload,
+  ) {
+    if (verifiedUser) {
+      const realFileName = `${verifiedUser.userId}${filename}`;
+      const filePath = `public/${realFileName}`;
+
+      return new Promise((resolve, reject) => {
+        createReadStream()
+          .pipe(createWriteStream(filePath))
+          .on('finish', async () => {
+            await User.update(
+              { id: verifiedUser.userId },
+              { profileImage: realFileName },
+            );
+            return resolve(true);
+          })
+          .on('error', () => reject(new Error('file upload failed')));
+      });
+    }
+  }
+
   @UseMiddleware(isAuthenticated)
   @Mutation(() => Boolean)
   async logout(@Ctx() { verifiedUser, res, redis }: MyContext) {

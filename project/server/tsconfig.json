@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "commonjs",
+    "module": "ESNext",
     "lib": ["dom", "es6", "es2018", "esnext.asynciterable"],
     "skipLibCheck": false,
     "sourceMap": true,
@@ -19,7 +19,14 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "allowJs": true
+  },
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   },
   "exclude": ["node_modules"],
   "include": ["./**/*.ts", "src"]

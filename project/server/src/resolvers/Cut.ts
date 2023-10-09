@@ -28,11 +28,6 @@ export class CutResolver {
     return ghibliData.cuts.find((cut) => cut.id === cutId);
   }
 
-  @FieldResolver(() => Film, { nullable: true })
-  film(@Root() cut: Cut) {
-    return ghibliData.films.find((film) => film.id === cut.filmId);
-  }
-
   @Mutation(() => Boolean)
   @UseMiddleware(isAuthenticated)
   async vote(
@@ -56,6 +51,11 @@ export class CutResolver {
       return true;
     }
     return false;
+  }
+
+  @FieldResolver(() => Film, { nullable: true })
+  film(@Root() cut: Cut) {
+    return ghibliData.films.find((film) => film.id === cut.filmId);
   }
 
   @FieldResolver(() => Int)

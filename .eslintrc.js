@@ -7,6 +7,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'import',
   ],
   plugins: ['react', 'react-hooks'],
   env: {
@@ -65,6 +66,8 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
+        moduleDirectory: ['node_modules', '@types'],
+        typescript: {},
       },
     },
   },

@@ -10,6 +10,7 @@ import {
   Mutation,
   Query,
   Resolver,
+  ResolverInterface,
   Root,
   UseMiddleware,
 } from 'type-graphql';
@@ -23,12 +24,16 @@ import User from '../entities/User';
 @ArgsType()
 class PaginationArgs {
   @Field(() => Int, { defaultValue: 2 })
+  @IsInt()
   take: number;
 
   @Field(() => Int, { nullable: true })
+  @IsInt()
   skip?: number;
 
-  @Field(() => Int) cutId: number;
+  @Field(() => Int)
+  @IsInt()
+  cutId: number;
 }
 
 @InputType()
@@ -43,16 +48,10 @@ class CreateOrUpdateCutReviewInput {
 }
 
 @Resolver(CutReview)
-export class CutReviewResolver {
-  @FieldResolver(() => Boolean)
-  isMine(@Root() cutReview: CutReview, @Ctx() { verifiedUser }: MyContext) {
-    if (!verifiedUser) return false;
-    return cutReview.userId === verifiedUser.userId;
-  }
-
+export class CutReviewResolver implements ResolverInterface<CutReview> {
   @Query(() => [CutReview])
   async cutReviews(
-    @Args() { take, skip, cutId }: PaginationArgs,
+    @Args({ validate: false }) { take, skip, cutId }: PaginationArgs,
     @Ctx() { verifiedUser }: MyContext,
   ) {
     let realTake = 2;
@@ -61,9 +60,7 @@ export class CutReviewResolver {
     if (verifiedUser && verifiedUser.userId) {
       reviewHistory = await CutReview.findOne({
         where: {
-          user: {
-            id: verifiedUser.userId,
-          },
+          user: { id: verifiedUser.userId },
           cutId,
         },
       });
@@ -83,9 +80,7 @@ export class CutReviewResolver {
       order: { createdAt: 'DESC' },
     });
 
-    if (reviewHistory) {
-      return [reviewHistory, ...reviews];
-    }
+    if (reviewHistory) return [reviewHistory, ...reviews];
     return reviews;
   }
 
@@ -123,13 +118,14 @@ export class CutReviewResolver {
   }
 
   @FieldResolver(() => User)
-  async user(@Root() cutReview: CutReview) {
-    const user = await User.findOne({
-      where: {
-        id: cutReview.userId,
-      },
-    });
-    return user;
+  user(@Root() cutReview: CutReview) {
+    return User.findOne({ where: { id: cutReview.userId } }) as Promise<User>;
+  }
+
+  @FieldResolver(() => Boolean)
+  isMine(@Root() cutReview: CutReview, @Ctx() { verifiedUser }: MyContext) {
+    if (!verifiedUser) return false;
+    return cutReview.userId === verifiedUser.userId;
   }
 
   @Mutation(() => Boolean)

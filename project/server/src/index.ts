@@ -6,6 +6,7 @@ import cors from 'cors';
 import { json } from 'body-parser';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress';
 import redis from './redis/redis-client';
 import { createDB } from './db/db-client';
 import createApolloServer from './apollo/createApolloServer';
@@ -21,6 +22,8 @@ async function main() {
   await createDB();
 
   app.use(cookieParser());
+  app.use(graphqlUploadExpress({ maxFileSize: 1024 * 1000 * 5, maxFiles: 1 }));
+  app.use(express.static('public'));
 
   const apolloServer = await createApolloServer(httpServer);
   await apolloServer.start();

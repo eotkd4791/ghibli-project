@@ -19,7 +19,7 @@ export default class User extends BaseEntity {
   id!: number;
 
   @Field({ description: '유저 이름' })
-  @Column({ unique: true, comment: '유저 이름' })
+  @Column({ comment: '유저 이름' })
   username: string;
 
   @Field({ description: '유저 이메일' })
@@ -42,4 +42,8 @@ export default class User extends BaseEntity {
 
   @OneToMany(() => CutReview, (cutReview) => cutReview.user)
   cutReviews: CutReview[];
+
+  @Column({ comment: '프로필 사진 경로', nullable: true })
+  @Field({ description: '프로필 사진 경로', nullable: true })
+  profileImage: string;
 }

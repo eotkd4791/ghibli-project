@@ -47,7 +47,7 @@ export type CutReview = {
   id: Scalars['Int'];
   isMine: Scalars['Boolean'];
   /** 수정 일자 */
-  updateAt: Scalars['String'];
+  updatedAt: Scalars['String'];
   user: User;
 };
 
@@ -162,7 +162,7 @@ export type QueryCutArgs = {
 export type QueryCutReviewsArgs = {
   cutId: Scalars['Int'];
   skip?: InputMaybe<Scalars['Int']>;
-  take?: InputMaybe<Scalars['Int']>;
+  take?: Scalars['Int'];
 };
 
 
@@ -213,6 +213,13 @@ export type CreateOrUpdateCutReviewMutationVariables = Exact<{
 
 export type CreateOrUpdateCutReviewMutation = { __typename?: 'Mutation', createOrUpdateCutReview?: { __typename?: 'CutReview', contents: string, cutId: number, id: number, createdAt: string, isMine: boolean, user: { __typename?: 'User', username: string, email: string } } | null };
 
+export type DeleteCutReviewMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteCutReviewMutation = { __typename?: 'Mutation', deleteReview: boolean };
+
 export type LoginMutationVariables = Exact<{
   loginInput: LoginInput;
 }>;
@@ -249,7 +256,7 @@ export type CutQueryVariables = Exact<{
 }>;
 
 
-export type CutQuery = { __typename?: 'Query', cut?: { __typename?: 'Cut', id: number, src: string, votesCount: number, isVoted: boolean, film?: { __typename?: 'Film', id: number, title: string } | null } | null };
+export type CutQuery = { __typename?: 'Query', cut?: { __typename?: 'Cut', id: number, src: string, votesCount: number, isVoted: boolean, film?: { __typename?: 'Film', id: number, title: string } | null } | null, cutReviews: Array<{ __typename?: 'CutReview', id: number, contents: string, isMine: boolean, user: { __typename?: 'User', username: string, email: string } }> };
 
 export type CutsQueryVariables = Exact<{
   filmId: Scalars['Int'];
@@ -320,6 +327,37 @@ export function useCreateOrUpdateCutReviewMutation(baseOptions?: Apollo.Mutation
 export type CreateOrUpdateCutReviewMutationHookResult = ReturnType<typeof useCreateOrUpdateCutReviewMutation>;
 export type CreateOrUpdateCutReviewMutationResult = Apollo.MutationResult<CreateOrUpdateCutReviewMutation>;
 export type CreateOrUpdateCutReviewMutationOptions = Apollo.BaseMutationOptions<CreateOrUpdateCutReviewMutation, CreateOrUpdateCutReviewMutationVariables>;
+export const DeleteCutReviewDocument = gql`
+    mutation deleteCutReview($id: Int!) {
+  deleteReview(id: $id)
+}
+    `;
+export type DeleteCutReviewMutationFn = Apollo.MutationFunction<DeleteCutReviewMutation, DeleteCutReviewMutationVariables>;
+
+/**
+ * __useDeleteCutReviewMutation__
+ *
+ * To run a mutation, you first call `useDeleteCutReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCutReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCutReviewMutation, { data, loading, error }] = useDeleteCutReviewMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCutReviewMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCutReviewMutation, DeleteCutReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCutReviewMutation, DeleteCutReviewMutationVariables>(DeleteCutReviewDocument, options);
+      }
+export type DeleteCutReviewMutationHookResult = ReturnType<typeof useDeleteCutReviewMutation>;
+export type DeleteCutReviewMutationResult = Apollo.MutationResult<DeleteCutReviewMutation>;
+export type DeleteCutReviewMutationOptions = Apollo.BaseMutationOptions<DeleteCutReviewMutation, DeleteCutReviewMutationVariables>;
 export const LoginDocument = gql`
     mutation login($loginInput: LoginInput!) {
   login(loginInput: $loginInput) {
@@ -503,6 +541,15 @@ export const CutDocument = gql`
     }
     votesCount
     isVoted
+  }
+  cutReviews(cutId: $cutId) {
+    id
+    contents
+    isMine
+    user {
+      username
+      email
+    }
   }
 }
     `;

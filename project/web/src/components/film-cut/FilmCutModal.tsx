@@ -19,7 +19,9 @@ interface Props {
 }
 
 const FilmCutModal: React.FC<Props> = ({ open, onClose, cutId }) => {
-  const { loading, data } = useCutQuery({ variables: { cutId } });
+  const { loading, data } = useCutQuery({
+    variables: { cutId },
+  });
 
   const modalSize = useBreakpointValue({ base: 'full', md: 'xl' });
 
@@ -48,6 +50,7 @@ const FilmCutModal: React.FC<Props> = ({ open, onClose, cutId }) => {
               cutImg={data.cut.src}
               votesCount={data.cut.votesCount}
               isVoted={data.cut.isVoted}
+              reviews={data.cutReviews}
             />
           )}
         </ModalBody>
@@ -55,4 +58,5 @@ const FilmCutModal: React.FC<Props> = ({ open, onClose, cutId }) => {
     </Modal>
   );
 };
+
 export default FilmCutModal;
